@@ -8,6 +8,7 @@
     "platform": "ios",
     "codemagicAppId": "69bc038bca9ee176227a4631",
     "repoUrl": "https://github.com/OlaaSoft/TurboScanner",
+    "repoFullName": "OlaaSoft/TurboScanner",
     "releaseCycleDays": 15,
     "lastReleaseDate": "2026-03-20"
   }

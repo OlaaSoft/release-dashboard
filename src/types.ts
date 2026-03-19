@@ -7,6 +7,7 @@ export interface AppConfig {
   platform: "ios" | "android";
   codemagicAppId: string;
   repoUrl: string;
+  repoFullName: string;
   releaseCycleDays: number;
   lastReleaseDate: string;
 }

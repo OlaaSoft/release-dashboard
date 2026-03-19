@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { AppConfig, BuildInfo } from "@/types";
+import BumpVersionModal from "./BumpVersionModal";
 
 interface AppCardProps {
   app: AppConfig;
@@ -33,6 +34,10 @@ export default function AppCard({
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const buildStartRef = useRef<number | null>(null);
+
+  // Modal state
+  const [showBumpModal, setShowBumpModal] = useState(false);
+  const [isBumping, setIsBumping] = useState(false);
 
   // Detect if latestBuild is currently active
   const isLatestBuildActive =
@@ -103,13 +108,44 @@ export default function AppCard({
     };
   }, [activeBuildId, pollBuildStatus]);
 
-  const handleTrigger = async () => {
-    const buildId = await onTriggerBuild(app);
-    if (buildId) {
-      setActiveBuildId(buildId);
-      setActiveBuildStatus("queued");
-      buildStartRef.current = Date.now();
-      setElapsedTime(0);
+  const handleTriggerClick = () => {
+    setShowBumpModal(true);
+  };
+
+  const handleBumpAndBuild = async (version: string, buildNumber: number) => {
+    setIsBumping(true);
+    try {
+      // 1. Bump version via API
+      const bumpResponse = await fetch("/api/bump-version", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          repoFullName: app.repoFullName,
+          version,
+          buildNumber,
+        }),
+      });
+
+      if (!bumpResponse.ok) {
+        const data = await bumpResponse.json();
+        throw new Error(data.error || "Failed to bump version");
+      }
+
+      // 2. Trigger the build
+      const buildId = await onTriggerBuild(app);
+      if (buildId) {
+        setActiveBuildId(buildId);
+        setActiveBuildStatus("queued");
+        buildStartRef.current = Date.now();
+        setElapsedTime(0);
+      }
+
+      setShowBumpModal(false);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert(`Error: ${message}`);
+    } finally {
+      setIsBumping(false);
     }
   };
 
@@ -206,7 +242,7 @@ export default function AppCard({
       {/* Actions */}
       <div className="flex items-center gap-2">
         <button
-          onClick={handleTrigger}
+          onClick={handleTriggerClick}
           disabled={isTriggering || isBuilding}
           className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
@@ -237,6 +273,17 @@ export default function AppCard({
           <GithubIcon />
         </a>
       </div>
+
+      {/* Bump Version Modal */}
+      <BumpVersionModal
+        isOpen={showBumpModal}
+        appName={app.name}
+        currentVersion={app.currentVersion}
+        currentBuildNumber={app.buildNumber}
+        onClose={() => setShowBumpModal(false)}
+        onConfirm={handleBumpAndBuild}
+        isLoading={isBumping}
+      />
     </div>
   );
 }
