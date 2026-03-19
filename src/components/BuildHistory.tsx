@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { BuildInfo } from "@/types";
 
 interface BuildHistoryProps {
@@ -112,50 +113,63 @@ function BuildRow({ build }: { build: BuildInfo }) {
   const duration = getBuildDuration(build.startedAt, build.finishedAt);
 
   return (
-    <div className="flex items-center gap-4 rounded-lg bg-background/50 px-4 py-3 transition-colors hover:bg-background/70">
-      {/* Status icon */}
-      <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${config.bg} ${config.color}`}
-      >
-        {config.icon}
-      </div>
-
-      {/* Build info */}
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-foreground">
-            {build.workflowId || "Build"}
-          </span>
-          <span className="rounded bg-card-border px-1.5 py-0.5 text-xs text-muted">
-            {build.branch || "main"}
-          </span>
+    <Link href={`/build/${build._id}`}>
+      <div className="group flex items-center gap-4 rounded-lg bg-background/50 px-4 py-3 transition-colors hover:bg-background/70 cursor-pointer">
+        {/* Status icon */}
+        <div
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${config.bg} ${config.color}`}
+        >
+          {config.icon}
         </div>
-        {build.commit?.message && (
-          <p className="mt-0.5 truncate text-xs text-muted">
-            {build.commit.message}
+
+        {/* Build info */}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-foreground">
+              {build.workflowId || "Build"}
+            </span>
+            <span className="rounded bg-card-border px-1.5 py-0.5 text-xs text-muted">
+              {build.branch || "main"}
+            </span>
+          </div>
+          {build.commit?.message && (
+            <p className="mt-0.5 truncate text-xs text-muted">
+              {build.commit.message}
+            </p>
+          )}
+        </div>
+
+        {/* Duration & time */}
+        <div className="shrink-0 text-right">
+          <p className="text-sm text-foreground">
+            {duration || "--"}
           </p>
-        )}
-      </div>
+          <p className="text-xs text-muted">
+            {build.startedAt
+              ? formatRelativeTime(build.startedAt)
+              : "Pending"}
+          </p>
+        </div>
 
-      {/* Duration & time */}
-      <div className="shrink-0 text-right">
-        <p className="text-sm text-foreground">
-          {duration || "--"}
-        </p>
-        <p className="text-xs text-muted">
-          {build.startedAt
-            ? formatRelativeTime(build.startedAt)
-            : "Pending"}
-        </p>
-      </div>
+        {/* Status label */}
+        <span
+          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${config.bg} ${config.color}`}
+        >
+          {build.status.charAt(0).toUpperCase() + build.status.slice(1)}
+        </span>
 
-      {/* Status label */}
-      <span
-        className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${config.bg} ${config.color}`}
-      >
-        {build.status.charAt(0).toUpperCase() + build.status.slice(1)}
-      </span>
-    </div>
+        {/* Arrow indicator */}
+        <svg
+          className="h-4 w-4 shrink-0 text-muted/40 transition-colors group-hover:text-muted"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+    </Link>
   );
 }
 

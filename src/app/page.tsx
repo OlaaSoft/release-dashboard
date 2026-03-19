@@ -52,7 +52,7 @@ export default function Dashboard() {
     setTimeout(() => setToast(null), 4000);
   };
 
-  const handleTriggerBuild = async (app: AppConfig) => {
+  const handleTriggerBuild = async (app: AppConfig): Promise<string | undefined> => {
     setTriggeringApps((prev) => new Set(prev).add(app.codemagicAppId));
 
     try {
@@ -70,16 +70,19 @@ export default function Dashboard() {
 
       if (response.ok) {
         showToast(
-          `Build triggered for ${app.name}! Build ID: ${data.buildId}`,
+          `Build triggered for ${app.name}!`,
           "success"
         );
         // Refresh builds after a short delay
         setTimeout(fetchBuilds, 3000);
+        return data.buildId;
       } else {
         showToast(data.error || "Failed to trigger build", "error");
+        return undefined;
       }
     } catch {
       showToast("Network error — could not trigger build", "error");
+      return undefined;
     } finally {
       setTriggeringApps((prev) => {
         const next = new Set(prev);
@@ -263,6 +266,7 @@ export default function Dashboard() {
                 latestBuild={getLatestBuild(app.codemagicAppId)}
                 onTriggerBuild={handleTriggerBuild}
                 isTriggering={triggeringApps.has(app.codemagicAppId)}
+                onBuildStatusChange={fetchBuilds}
               />
             ))}
           </div>

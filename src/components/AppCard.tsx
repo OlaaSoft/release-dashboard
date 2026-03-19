@@ -1,12 +1,15 @@
 "use client";
 
+import { useEffect, useState, useRef, useCallback } from "react";
+import Link from "next/link";
 import { AppConfig, BuildInfo } from "@/types";
 
 interface AppCardProps {
   app: AppConfig;
   latestBuild?: BuildInfo;
-  onTriggerBuild: (app: AppConfig) => void;
+  onTriggerBuild: (app: AppConfig) => Promise<string | undefined>;
   isTriggering: boolean;
+  onBuildStatusChange?: () => void;
 }
 
 export default function AppCard({
@@ -14,6 +17,7 @@ export default function AppCard({
   latestBuild,
   onTriggerBuild,
   isTriggering,
+  onBuildStatusChange,
 }: AppCardProps) {
   const nextReleaseDate = getNextReleaseDate(
     app.lastReleaseDate,
@@ -22,7 +26,98 @@ export default function AppCard({
   const daysUntilRelease = getDaysUntil(nextReleaseDate);
   const urgency = getUrgency(daysUntilRelease);
 
-  const buildStatus = latestBuild?.status || "unknown";
+  // Track active build for polling
+  const [activeBuildId, setActiveBuildId] = useState<string | null>(null);
+  const [activeBuildStatus, setActiveBuildStatus] = useState<string | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const buildStartRef = useRef<number | null>(null);
+
+  // Detect if latestBuild is currently active
+  const isLatestBuildActive =
+    latestBuild &&
+    (latestBuild.status === "building" || latestBuild.status === "queued");
+
+  // If latestBuild becomes active (e.g., from page refresh), start polling it
+  useEffect(() => {
+    if (isLatestBuildActive && !activeBuildId) {
+      setActiveBuildId(latestBuild._id);
+      setActiveBuildStatus(latestBuild.status);
+    }
+  }, [isLatestBuildActive, latestBuild, activeBuildId]);
+
+  // Poll active build status
+  const pollBuildStatus = useCallback(async () => {
+    if (!activeBuildId) return;
+
+    try {
+      const response = await fetch(`/api/build-detail?buildId=${activeBuildId}`);
+      if (!response.ok) return;
+
+      const data = await response.json();
+      const build = data.build;
+      if (!build) return;
+
+      setActiveBuildStatus(build.status);
+
+      // If build finished, stop polling and refresh parent
+      if (build.status !== "building" && build.status !== "queued") {
+        setActiveBuildId(null);
+        setActiveBuildStatus(null);
+        buildStartRef.current = null;
+        setElapsedTime(0);
+        if (onBuildStatusChange) {
+          onBuildStatusChange();
+        }
+      }
+    } catch {
+      // Silently fail, will retry on next poll
+    }
+  }, [activeBuildId, onBuildStatusChange]);
+
+  // Start/stop polling interval
+  useEffect(() => {
+    if (activeBuildId) {
+      pollRef.current = setInterval(pollBuildStatus, 5000);
+      // Start elapsed timer
+      if (!buildStartRef.current) {
+        buildStartRef.current = Date.now();
+      }
+      timerRef.current = setInterval(() => {
+        if (buildStartRef.current) {
+          setElapsedTime(Math.floor((Date.now() - buildStartRef.current) / 1000));
+        }
+      }, 1000);
+    }
+
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [activeBuildId, pollBuildStatus]);
+
+  const handleTrigger = async () => {
+    const buildId = await onTriggerBuild(app);
+    if (buildId) {
+      setActiveBuildId(buildId);
+      setActiveBuildStatus("queued");
+      buildStartRef.current = Date.now();
+      setElapsedTime(0);
+    }
+  };
+
+  const isBuilding = !!activeBuildId || isLatestBuildActive;
+  const currentBuildId = activeBuildId || latestBuild?._id;
+  const displayStatus = activeBuildStatus || latestBuild?.status || "unknown";
+
+  const buildStatus = isBuilding ? displayStatus : (latestBuild?.status || "unknown");
   const lastBuildDate = latestBuild?.startedAt
     ? formatDate(latestBuild.startedAt)
     : "No builds yet";
@@ -42,6 +137,32 @@ export default function AppCard({
         </div>
         <StatusBadge status={buildStatus} />
       </div>
+
+      {/* Active Build Indicator */}
+      {isBuilding && currentBuildId && (
+        <Link href={`/build/${currentBuildId}`}>
+          <div className="mb-4 flex items-center gap-3 rounded-lg border border-warning/20 bg-warning/5 px-4 py-3 transition-colors hover:bg-warning/10 cursor-pointer">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warning/10 text-warning">
+              <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-warning">
+                {displayStatus === "queued" ? "Build Queued" : "Building..."}
+              </p>
+              <p className="text-xs text-muted">
+                {elapsedTime > 0 ? formatElapsed(elapsedTime) : "Starting..."}
+                {" \u00b7 "}Click for details
+              </p>
+            </div>
+            <svg className="h-4 w-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </div>
+        </Link>
+      )}
 
       {/* Info Grid */}
       <div className="mb-5 grid grid-cols-2 gap-3">
@@ -85,14 +206,19 @@ export default function AppCard({
       {/* Actions */}
       <div className="flex items-center gap-2">
         <button
-          onClick={() => onTriggerBuild(app)}
-          disabled={isTriggering}
+          onClick={handleTrigger}
+          disabled={isTriggering || isBuilding}
           className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isTriggering ? (
             <>
               <Spinner />
               Triggering...
+            </>
+          ) : isBuilding ? (
+            <>
+              <Spinner />
+              Build in Progress
             </>
           ) : (
             <>
@@ -113,6 +239,13 @@ export default function AppCard({
       </div>
     </div>
   );
+}
+
+function formatElapsed(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
 }
 
 function InfoItem({
@@ -162,7 +295,6 @@ function getNextReleaseDate(lastRelease: string, cycleDays: number): Date {
   const last = new Date(lastRelease);
   const next = new Date(last);
   next.setDate(next.getDate() + cycleDays);
-  // If the next date is already in the past, keep adding cycles
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   while (next < today) {
