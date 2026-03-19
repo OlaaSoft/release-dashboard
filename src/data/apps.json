@@ -1,0 +1,14 @@
+[
+  {
+    "name": "TurboScanner",
+    "displayName": "TurboScanner - Scan to PDF",
+    "bundleId": "com.ols.turboscanner",
+    "currentVersion": "1.0.0",
+    "buildNumber": 3,
+    "platform": "ios",
+    "codemagicAppId": "69bc038bca9ee176227a4631",
+    "repoUrl": "https://github.com/OlaaSoft/TurboScanner",
+    "releaseCycleDays": 15,
+    "lastReleaseDate": "2026-03-20"
+  }
+]
