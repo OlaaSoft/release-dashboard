@@ -39,6 +39,27 @@ export default function AppCard({
   const [showBumpModal, setShowBumpModal] = useState(false);
   const [isBumping, setIsBumping] = useState(false);
 
+  // Live version from GitHub
+  const [liveVersion, setLiveVersion] = useState<string>(app.currentVersion);
+  const [liveBuildNumber, setLiveBuildNumber] = useState<number>(app.buildNumber);
+
+  // Fetch version from GitHub on mount
+  useEffect(() => {
+    async function fetchVersion() {
+      try {
+        const res = await fetch(`/api/app-version?repo=${app.repoFullName}`);
+        if (res.ok) {
+          const data = await res.json();
+          setLiveVersion(data.version);
+          setLiveBuildNumber(data.buildNumber);
+        }
+      } catch {
+        // Fall back to static data
+      }
+    }
+    fetchVersion();
+  }, [app.repoFullName]);
+
   // Detect if latestBuild is currently active
   const isLatestBuildActive =
     latestBuild &&
@@ -202,7 +223,7 @@ export default function AppCard({
 
       {/* Info Grid */}
       <div className="mb-5 grid grid-cols-2 gap-3">
-        <InfoItem label="Version" value={`${app.currentVersion} (${app.buildNumber})`} />
+        <InfoItem label="Version" value={`${liveVersion} (${liveBuildNumber})`} />
         <InfoItem label="Last Build" value={lastBuildDate} />
         <InfoItem label="Next Release" value={formatDate(nextReleaseDate.toISOString())} />
         <InfoItem
@@ -278,8 +299,8 @@ export default function AppCard({
       <BumpVersionModal
         isOpen={showBumpModal}
         appName={app.name}
-        currentVersion={app.currentVersion}
-        currentBuildNumber={app.buildNumber}
+        currentVersion={liveVersion}
+        currentBuildNumber={liveBuildNumber}
         onClose={() => setShowBumpModal(false)}
         onConfirm={handleBumpAndBuild}
         isLoading={isBumping}
