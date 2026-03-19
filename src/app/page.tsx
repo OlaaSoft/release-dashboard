@@ -6,8 +6,10 @@ import ReleaseCalendar from "@/components/ReleaseCalendar";
 import BuildHistory from "@/components/BuildHistory";
 import { AppConfig, BuildInfo } from "@/types";
 import appsData from "@/data/apps.json";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const router = useRouter();
   const apps = appsData as AppConfig[];
   const [builds, setBuilds] = useState<BuildInfo[]>([]);
   const [isLoadingBuilds, setIsLoadingBuilds] = useState(true);
@@ -92,6 +94,12 @@ export default function Dashboard() {
     }
   };
 
+  const handleLogout = async () => {
+    await fetch("/api/auth", { method: "DELETE" });
+    router.push("/login");
+    router.refresh();
+  };
+
   const getLatestBuild = (appId: string): BuildInfo | undefined => {
     return builds.find((b) => b.appId === appId);
   };
@@ -163,6 +171,26 @@ export default function Dashboard() {
             <span className="text-xs text-muted">
               {apps.length} app{apps.length !== 1 ? "s" : ""}
             </span>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 rounded-lg border border-card-border px-3 py-2 text-sm text-muted transition-colors hover:border-danger/30 hover:text-danger"
+              title="Logout"
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3-3h-9m9 0l-3-3m3 3l-3 3"
+                />
+              </svg>
+              Logout
+            </button>
           </div>
         </div>
       </header>
