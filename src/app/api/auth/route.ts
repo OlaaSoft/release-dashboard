@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = hashToken(dashboardPassword);
+    const token = await hashToken(dashboardPassword);
     const response = NextResponse.json({ success: true });
 
     response.cookies.set(getAuthCookieName(), token, {

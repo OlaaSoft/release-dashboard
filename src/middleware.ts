@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const AUTH_COOKIE_NAME = "dashboard_auth";
+const AUTH_SECRET = "olaasoft-release-dashboard-secret-2024";
 
 export async function middleware(request: NextRequest) {
   const password = process.env.DASHBOARD_PASSWORD;
@@ -19,7 +20,7 @@ export async function middleware(request: NextRequest) {
 
   // Check auth cookie
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
-  const expectedToken = await hashToken(password);
+  const expectedToken = await hmacHash(password);
 
   if (token !== expectedToken) {
     if (pathname.startsWith("/api/")) {
@@ -32,11 +33,11 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-async function hashToken(password: string): Promise<string> {
+async function hmacHash(password: string): Promise<string> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
     "raw",
-    encoder.encode("olaasoft-release-dashboard-secret"),
+    encoder.encode(AUTH_SECRET),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"]
