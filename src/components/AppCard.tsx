@@ -262,6 +262,7 @@ export default function AppCard({
 
       {/* Actions */}
       <div className="flex items-center gap-2">
+        {/* TODO: Re-enable trigger build when needed
         <button
           onClick={handleTriggerClick}
           disabled={isTriggering || isBuilding}
@@ -284,6 +285,7 @@ export default function AppCard({
             </>
           )}
         </button>
+        */}
         <a
           href={app.repoUrl}
           target="_blank"
@@ -295,7 +297,7 @@ export default function AppCard({
         </a>
       </div>
 
-      {/* Bump Version Modal */}
+      {/* TODO: Re-enable bump version modal when needed
       <BumpVersionModal
         isOpen={showBumpModal}
         appName={app.name}
@@ -305,6 +307,7 @@ export default function AppCard({
         onConfirm={handleBumpAndBuild}
         isLoading={isBumping}
       />
+      */}
     </div>
   );
 }
