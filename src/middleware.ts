@@ -13,8 +13,12 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Allow login page and auth API
-  if (pathname === "/login" || pathname.startsWith("/api/auth")) {
+  // Allow login page, auth API, and public landing pages
+  if (
+    pathname === "/login" ||
+    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/turboscanner")
+  ) {
     return NextResponse.next();
   }
 
