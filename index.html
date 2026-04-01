@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OlaaSoft Release Dashboard</title>
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --surface: #131827;
+    --surface2: #1a2035;
+    --border: #253049;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --primary: #6366f1;
+    --primary2: #818cf8;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --accent: #3b82f6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ---- Login ---- */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+  .login-card h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .login-card p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
+  .login-card input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 16px;
+  }
+  .login-card input:focus { border-color: var(--primary); }
+  .login-card button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .login-card button:hover { opacity: 0.9; }
+  .login-error { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; }
+
+  /* ---- Dashboard ---- */
+  #dashboard { display: none; }
+  .header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header h1 { font-size: 20px; font-weight: 800; }
+  .header-actions { display: flex; gap: 12px; align-items: center; }
+  .btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--surface2); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    color: white;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-danger { border-color: var(--danger); color: var(--danger); }
+
+  /* ---- Stats Bar ---- */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    padding: 20px 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .stat-card .label { font-size: 12px; color: var(--text3); font-weight: 500; }
+  .stat-card .value { font-size: 28px; font-weight: 800; margin-top: 4px; }
+  .stat-card .value.green { color: var(--success); }
+  .stat-card .value.yellow { color: var(--warning); }
+  .stat-card .value.red { color: var(--danger); }
+
+  /* ---- App Grid ---- */
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+    padding: 0 24px 24px;
+  }
+  .app-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .app-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .app-name { font-size: 16px; font-weight: 700; }
+  .app-bundle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .status-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .status-ok { background: rgba(34,197,94,0.15); color: var(--success); }
+  .status-warn { background: rgba(245,158,11,0.15); color: var(--warning); }
+  .status-overdue { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+  .release-info { margin-bottom: 12px; }
+  .release-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .release-row .label { color: var(--text3); }
+  .release-row .value { font-weight: 600; }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  .release-history { margin-top: 12px; }
+  .release-history h4 { font-size: 12px; color: var(--text3); margin-bottom: 8px; font-weight: 600; }
+  .history-list { max-height: 120px; overflow-y: auto; }
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .history-item:last-child { border: none; }
+  .history-item .ver { font-weight: 600; color: var(--primary2); }
+  .history-item .date { color: var(--text3); }
+  .history-item .del-btn {
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px;
+  }
+  .history-item .del-btn:hover { color: var(--danger); }
+
+  .card-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+  /* ---- Modal ---- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+  .modal label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 6px; font-weight: 500; }
+  .modal input, .modal select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 14px;
+  }
+  .modal input:focus, .modal select:focus { border-color: var(--primary); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+  .modal-actions button { flex: 1; }
+
+  /* Calendar hint */
+  .next-release {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+  .next-release .cal-icon { font-size: 14px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  @media (max-width: 600px) {
+    .app-grid { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .header { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ---- Login ---- -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>OlaaSoft</h1>
+    <p>Release Dashboard</p>
+    <input type="password" id="pwd" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-error">Wrong password</div>
+  </div>
+</div>
+
+<!-- ---- Dashboard ---- -->
+<div id="dashboard">
+  <div class="header">
+    <div>
+      <h1>Release Dashboard</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="exportData()">Export</button>
+      <button class="btn" onclick="importData()">Import</button>
+      <button class="btn btn-primary" onclick="openAddRelease()">+ Add Release</button>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar"></div>
+  <div class="app-grid" id="app-grid"></div>
+</div>
+
+<!-- ---- Add Release Modal ---- -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <h2>Add Release</h2>
+    <label>App</label>
+    <select id="add-app"></select>
+    <label>Version</label>
+    <input type="text" id="add-version" placeholder="e.g. 1.0.2">
+    <label>Release Date</label>
+    <input type="date" id="add-date">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-add')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRelease()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- Config ----
+const PASSWORD_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // sha256 of 'password'
+const CYCLE_DAYS = 14;
+const APPS = [
+  { id: 'turboscanner', name: 'TurboScanner', bundle: 'com.ols.turboscanner' },
+  { id: 'patches', name: 'Patches', bundle: 'com.ols.patches' },
+  { id: 'simsim', name: 'SIM-SIM', bundle: 'com.ols.simsim' },
+  { id: 'pixl', name: 'Pixl', bundle: 'com.ols.pixl' },
+  { id: 'swipey', name: 'Swipey', bundle: 'com.ols.swipey' },
+  { id: 'snapid', name: 'SnapID', bundle: 'com.ols.snapid' },
+  { id: 'nobg', name: 'NoBG', bundle: 'com.ols.nobg' },
+  { id: 'voxify', name: 'Voxify', bundle: 'com.ols.voxify' },
+  { id: 'facetoon', name: 'Facetoon', bundle: 'com.ols.facetoon' },
+  { id: 'colorudo', name: 'Colorudo', bundle: 'com.ols.colorudo' },
+  { id: 'dozzy', name: 'Dozzy', bundle: 'com.ols.dozzy' },
+  { id: 'uplift', name: 'Uplift', bundle: 'com.ols.uplift' },
+  { id: 'namora', name: 'Namora', bundle: 'com.ols.namora' },
+];
+
+// ---- Auth ----
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function doLogin() {
+  const pwd = document.getElementById('pwd').value;
+  const hash = await sha256(pwd);
+  if (hash === PASSWORD_HASH) {
+    localStorage.setItem('ols_dash_auth', '1');
+    showDashboard();
+  } else {
+    const err = document.getElementById('login-error');
+    err.style.display = 'block';
+    setTimeout(() => err.style.display = 'none', 2000);
+  }
+}
+
+function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  render();
+}
+
+// ---- Data ----
+function getData() {
+  return JSON.parse(localStorage.getItem('ols_releases') || '{}');
+}
+function setData(d) {
+  localStorage.setItem('ols_releases', JSON.stringify(d));
+}
+
+// ---- Render ----
+function render() {
+  const data = getData();
+  const now = new Date();
+  let okCount = 0, warnCount = 0, overdueCount = 0;
+
+  // Stats
+  APPS.forEach(app => {
+    const releases = data[app.id] || [];
+    const status = getStatus(releases, now);
+    if (status === 'ok') okCount++;
+    else if (status === 'warn') warnCount++;
+    else overdueCount++;
+  });
+
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-card">
+      <div class="label">Total Apps</div>
+      <div class="value">${APPS.length}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Up to Date</div>
+      <div class="value green">${okCount}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Due Soon</div>
+      <div class="value yellow">${warnCount}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Overdue</div>
+      <div class="value red">${overdueCount}</div>
+    </div>
+  `;
+
+  // App cards
+  document.getElementById('app-grid').innerHTML = APPS.map(app => {
+    const releases = (data[app.id] || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const latest = releases[0];
+    const status = getStatus(releases, now);
+    const statusLabel = status === 'ok' ? 'OK' : status === 'warn' ? 'DUE SOON' : 'OVERDUE';
+    const statusClass = status === 'ok' ? 'status-ok' : status === 'warn' ? 'status-warn' : 'status-overdue';
+
+    const daysSince = latest ? Math.floor((now - new Date(latest.date)) / 86400000) : -1;
+    const daysLeft = latest ? Math.max(0, CYCLE_DAYS - daysSince) : 0;
+    const progress = latest ? Math.min(100, (daysSince / CYCLE_DAYS) * 100) : 100;
+    const progressColor = status === 'ok' ? 'var(--success)' : status === 'warn' ? 'var(--warning)' : 'var(--danger)';
+
+    const nextDate = latest ? new Date(new Date(latest.date).getTime() + CYCLE_DAYS * 86400000) : null;
+    const nextStr = nextDate ? nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No releases';
+
+    const historyHtml = releases.slice(0, 5).map(r => `
+      <div class="history-item">
+        <span class="ver">${r.version}</span>
+        <span class="date">${new Date(r.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+        <span class="del-btn" onclick="deleteRelease('${app.id}','${r.date}','${r.version}')" title="Delete">×</span>
+      </div>
+    `).join('');
+
+    return `
+      <div class="app-card">
+        <div class="app-card-header">
+          <div>
+            <div class="app-name">${app.name}</div>
+            <div class="app-bundle">${app.bundle}</div>
+          </div>
+          <span class="status-badge ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="release-info">
+          <div class="release-row">
+            <span class="label">Latest Version</span>
+            <span class="value">${latest ? latest.version : '—'}</span>
+          </div>
+          <div class="release-row">
+            <span class="label">Released</span>
+            <span class="value">${latest ? daysSince + 'd ago' : '—'}</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;background:${progressColor}"></div></div>
+          <div class="next-release">
+            <span class="cal-icon">📅</span>
+            Next release by: <strong>${nextStr}</strong> ${daysLeft > 0 ? `(${daysLeft}d left)` : latest ? '(overdue!)' : ''}
+          </div>
+        </div>
+        <div class="release-history">
+          <h4>Release History</h4>
+          <div class="history-list">${historyHtml || '<div style="font-size:12px;color:var(--text3)">No releases yet</div>'}</div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-sm btn-primary" onclick="openAddReleaseFor('${app.id}')">+ Release</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getStatus(releases, now) {
+  if (!releases.length) return 'overdue';
+  const latest = releases.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+  const days = Math.floor((now - new Date(latest.date)) / 86400000);
+  if (days <= 10) return 'ok';
+  if (days <= CYCLE_DAYS) return 'warn';
+  return 'overdue';
+}
+
+// ---- Add Release ----
+function openAddRelease() {
+  const sel = document.getElementById('add-app');
+  sel.innerHTML = APPS.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+  document.getElementById('add-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('add-version').value = '';
+  document.getElementById('modal-add').classList.add('active');
+}
+
+function openAddReleaseFor(appId) {
+  openAddRelease();
+  document.getElementById('add-app').value = appId;
+  // Pre-fill next version
+  const data = getData();
+  const releases = (data[appId] || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (releases.length) {
+    const parts = releases[0].version.split('.');
+    if (parts.length === 3) {
+      parts[2] = parseInt(parts[2] || 0) + 1;
+      document.getElementById('add-version').value = parts.join('.');
+    }
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+function saveRelease() {
+  const appId = document.getElementById('add-app').value;
+  const version = document.getElementById('add-version').value.trim();
+  const date = document.getElementById('add-date').value;
+  if (!version || !date) return;
+
+  const data = getData();
+  if (!data[appId]) data[appId] = [];
+  data[appId].push({ version, date });
+  setData(data);
+  closeModal('modal-add');
+  render();
+}
+
+function deleteRelease(appId, date, version) {
+  if (!confirm(`Delete ${version} (${date})?`)) return;
+  const data = getData();
+  data[appId] = (data[appId] || []).filter(r => !(r.date === date && r.version === version));
+  setData(data);
+  render();
+}
+
+// ---- Export / Import ----
+function exportData() {
+  const blob = new Blob([JSON.stringify(getData(), null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ols-releases.json';
+  a.click();
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = async (e) => {
+    const text = await e.target.files[0].text();
+    try {
+      const d = JSON.parse(text);
+      setData(d);
+      render();
+    } catch { alert('Invalid JSON'); }
+  };
+  input.click();
+}
+
+// ---- Init ----
+if (localStorage.getItem('ols_dash_auth') === '1') {
+  showDashboard();
+}
+</script>
+</body>
+</html>
