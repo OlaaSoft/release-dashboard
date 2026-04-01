@@ -178,6 +178,8 @@ async function doLogin(){const h=await sha256(document.getElementById('pwd').val
 function showDashboard(){document.getElementById('login-screen').style.display='none';document.getElementById('dashboard').style.display='block';render();}
 function getData(){return JSON.parse(localStorage.getItem('ols_releases')||'{}');}
 function setData(d){localStorage.setItem('ols_releases',JSON.stringify(d));}
+function getMeta(){return JSON.parse(localStorage.getItem('ols_app_meta')||'{}');}
+function setMeta(d){localStorage.setItem('ols_app_meta',JSON.stringify(d));}
 
 function getStatus(releases){
   if(!releases.length) return 'none';
@@ -209,6 +211,7 @@ function render(){
   `;
 
   // Published app list
+  const meta=getMeta();
   document.getElementById('app-list-published').innerHTML=published.map(app=>{
     const l=app.releases[0];
     const days=Math.floor((now-new Date(l.date))/86400000);
@@ -219,8 +222,12 @@ function render(){
     const bl=app.status==='ok'?'OK':app.status==='warn'?'DUE SOON':'OVERDUE';
     const next=new Date(new Date(l.date).getTime()+CYCLE_DAYS*86400000);
     const ns=next.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const m=meta[app.id]||{};
+    const iconHtml=m.icon?`<img src="${m.icon}" width="40" height="40" style="border-radius:10px">`:`<div style="width:40px;height:40px;background:var(--surface2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--text3)">${app.name[0]}</div>`;
+    const displayName=m.fullName||app.name;
+    const genreHtml=m.genre?`<span style="font-size:10px;color:var(--text3);margin-left:8px">${m.genre}</span>`:'';
     return `<div class="app-row">
-      <div><div class="name">${app.name}</div><div class="bundle">${app.bundle}</div></div>
+      <div style="display:flex;align-items:center;gap:12px;min-width:200px">${iconHtml}<div><div class="name">${displayName}${genreHtml}</div><div class="bundle">${app.bundle}</div></div></div>
       <div class="info">
         <span>v<strong>${l.version}</strong></span>
         <span><strong>${days}d</strong> ago</span>
@@ -351,8 +358,10 @@ async function syncFromAppStore(){
   try{
     const res=await fetch(SYNC_URL);const live=await res.json();
     if(live.error) throw new Error(live.error);
-    const data=getData();let updated=0;
+    const data=getData();const meta=getMeta();let updated=0;
     for(const[appId,info] of Object.entries(live)){
+      // Save app metadata (icon, fullName, genre)
+      if(info.icon||info.fullName) meta[appId]={icon:info.icon||'',fullName:info.fullName||'',genre:info.genre||''};
       const date=info.releaseDate.split('T')[0];
       // Replace all data for this app with the live version
       // Keep manual entries that don't match the live version
@@ -368,7 +377,7 @@ async function syncFromAppStore(){
         updated++;
       }
     }
-    setData(data);render();
+    setData(data);setMeta(meta);render();
     btn.textContent=`✅ ${updated} synced`;
   }catch(err){btn.textContent='❌ Failed';console.error(err);}
   setTimeout(()=>{btn.textContent='🔄 Sync';btn.disabled=false;},2000);

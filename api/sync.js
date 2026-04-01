@@ -81,21 +81,30 @@ async function fetchAppVersion(jwt, appId, bundleId) {
   const version = json.data?.[0];
   if (!version) return null;
 
-  // Get actual release date from App Store lookup API (public, no auth needed)
+  // Get actual release date, icon, full name from App Store lookup API
   let releaseDate = version.attributes.createdDate;
+  let icon = '';
+  let fullName = '';
+  let genre = '';
   try {
     const lookupRes = await fetch(`https://itunes.apple.com/lookup?id=${appId}&country=us`);
     const lookupJson = await lookupRes.json();
     const result = lookupJson.results?.[0];
-    if (result?.currentVersionReleaseDate) {
-      releaseDate = result.currentVersionReleaseDate;
+    if (result) {
+      if (result.currentVersionReleaseDate) releaseDate = result.currentVersionReleaseDate;
+      icon = result.artworkUrl512 || result.artworkUrl100 || '';
+      fullName = result.trackName || '';
+      genre = result.primaryGenreName || '';
     }
-  } catch (_) { /* fallback to createdDate */ }
+  } catch (_) { /* fallback */ }
 
   return {
     version: version.attributes.versionString,
     state: version.attributes.appStoreState,
     releaseDate,
+    icon,
+    fullName,
+    genre,
   };
 }
 
@@ -129,11 +138,7 @@ export default {
       for (const [appId, appName] of Object.entries(apps)) {
         const ver = await fetchAppVersion(jwt, appId);
         if (ver) {
-          results[appName] = {
-            version: ver.version,
-            releaseDate: ver.releaseDate,
-            state: ver.state,
-          };
+          results[appName] = ver;
         }
       }
 
