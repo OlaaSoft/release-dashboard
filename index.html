@@ -6,268 +6,94 @@
 <title>OlaaSoft Release Dashboard</title>
 <style>
   :root {
-    --bg: #0b0f1a;
-    --surface: #131827;
-    --surface2: #1a2035;
-    --border: #253049;
-    --text: #e2e8f0;
-    --text2: #94a3b8;
-    --text3: #64748b;
-    --primary: #6366f1;
-    --primary2: #818cf8;
-    --success: #22c55e;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --accent: #3b82f6;
+    --bg: #0b0f1a; --surface: #131827; --surface2: #1a2035; --border: #253049;
+    --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b;
+    --primary: #6366f1; --primary2: #818cf8; --success: #22c55e;
+    --warning: #f59e0b; --danger: #ef4444; --accent: #3b82f6;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    min-height: 100vh;
-  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; min-height:100vh; }
 
-  /* ---- Login ---- */
-  #login-screen {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-  }
-  .login-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px;
-    width: 100%;
-    max-width: 380px;
-    text-align: center;
-  }
-  .login-card h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-  .login-card p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
-  .login-card input {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    font-size: 15px;
-    outline: none;
-    margin-bottom: 16px;
-  }
-  .login-card input:focus { border-color: var(--primary); }
-  .login-card button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .login-card button:hover { opacity: 0.9; }
-  .login-error { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; }
+  /* Login */
+  #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+  .login-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:40px; width:100%; max-width:380px; text-align:center; }
+  .login-card h1 { font-size:24px; font-weight:800; margin-bottom:8px; }
+  .login-card p { color:var(--text2); font-size:14px; margin-bottom:24px; }
+  .login-card input { width:100%; padding:12px 16px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:15px; outline:none; margin-bottom:16px; }
+  .login-card input:focus { border-color:var(--primary); }
+  .login-card button { width:100%; padding:12px; border-radius:10px; border:none; background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; font-size:15px; font-weight:600; cursor:pointer; }
+  .login-error { color:var(--danger); font-size:13px; margin-top:8px; display:none; }
 
-  /* ---- Dashboard ---- */
-  #dashboard { display: none; }
-  .header {
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .header h1 { font-size: 20px; font-weight: 800; }
-  .header-actions { display: flex; gap: 12px; align-items: center; }
-  .btn {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .btn:hover { background: var(--surface2); }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    border: none;
-    color: white;
-  }
-  .btn-primary:hover { opacity: 0.9; }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
-  .btn-danger { border-color: var(--danger); color: var(--danger); }
+  /* Dashboard */
+  #dashboard { display:none; max-width:1200px; margin:0 auto; padding:0 20px; }
+  .header { padding:20px 0; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .header h1 { font-size:22px; font-weight:800; }
+  .header-actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .btn { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; font-weight:600; cursor:pointer; }
+  .btn:hover { background:var(--surface2); }
+  .btn-primary { background:linear-gradient(135deg,var(--primary),var(--accent)); border:none; color:white; }
+  .btn-sm { padding:5px 10px; font-size:12px; }
 
-  /* ---- Stats Bar ---- */
-  .stats-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    padding: 20px 24px;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-  }
-  .stat-card .label { font-size: 12px; color: var(--text3); font-weight: 500; }
-  .stat-card .value { font-size: 28px; font-weight: 800; margin-top: 4px; }
-  .stat-card .value.green { color: var(--success); }
-  .stat-card .value.yellow { color: var(--warning); }
-  .stat-card .value.red { color: var(--danger); }
+  /* Stats */
+  .stats-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:20px 0; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; }
+  .stat-card .label { font-size:11px; color:var(--text3); font-weight:500; }
+  .stat-card .val { font-size:26px; font-weight:800; margin-top:2px; }
+  .green { color:var(--success); } .yellow { color:var(--warning); } .red { color:var(--danger); }
 
-  /* ---- App Grid ---- */
-  .app-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 16px;
-    padding: 0 24px 24px;
-  }
-  .app-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-  }
-  .app-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-  .app-name { font-size: 16px; font-weight: 700; }
-  .app-bundle { font-size: 11px; color: var(--text3); margin-top: 2px; }
-  .status-badge {
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .status-ok { background: rgba(34,197,94,0.15); color: var(--success); }
-  .status-warn { background: rgba(245,158,11,0.15); color: var(--warning); }
-  .status-overdue { background: rgba(239,68,68,0.15); color: var(--danger); }
+  /* Calendar */
+  .cal-wrap { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:20px; }
+  .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .cal-header h2 { font-size:18px; font-weight:700; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-day-name { text-align:center; font-size:11px; color:var(--text3); font-weight:600; padding:6px 0; }
+  .cal-cell { min-height:80px; background:var(--surface2); border-radius:8px; padding:6px; position:relative; }
+  .cal-cell.empty { background:transparent; }
+  .cal-cell .day-num { font-size:12px; font-weight:700; color:var(--text3); }
+  .cal-cell.today .day-num { color:var(--primary); }
+  .cal-cell.today { border:1px solid var(--primary); }
+  .cal-event { font-size:9px; font-weight:600; padding:2px 4px; border-radius:3px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:default; }
+  .cal-event.release { background:rgba(34,197,94,0.2); color:var(--success); }
+  .cal-event.deadline { background:rgba(239,68,68,0.15); color:var(--danger); }
+  .cal-event.deadline-warn { background:rgba(245,158,11,0.15); color:var(--warning); }
 
-  .release-info { margin-bottom: 12px; }
-  .release-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    font-size: 13px;
-  }
-  .release-row .label { color: var(--text3); }
-  .release-row .value { font-weight: 600; }
+  /* App List */
+  .section-title { font-size:16px; font-weight:700; margin:20px 0 12px; }
+  .app-list { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .app-row { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:16px; }
+  .app-row .name { font-size:14px; font-weight:700; min-width:120px; }
+  .app-row .bundle { font-size:11px; color:var(--text3); }
+  .app-row .info { flex:1; display:flex; align-items:center; gap:20px; font-size:13px; }
+  .app-row .info span { color:var(--text2); }
+  .app-row .info strong { color:var(--text); }
+  .badge { padding:3px 8px; border-radius:5px; font-size:10px; font-weight:700; text-transform:uppercase; }
+  .badge-ok { background:rgba(34,197,94,0.15); color:var(--success); }
+  .badge-warn { background:rgba(245,158,11,0.15); color:var(--warning); }
+  .badge-overdue { background:rgba(239,68,68,0.15); color:var(--danger); }
+  .badge-none { background:rgba(100,116,139,0.15); color:var(--text3); }
+  .app-row .actions { display:flex; gap:6px; }
+  .app-row-dim { opacity:0.5; }
 
-  .progress-bar {
-    width: 100%;
-    height: 6px;
-    background: var(--surface2);
-    border-radius: 3px;
-    margin: 10px 0;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.3s;
-  }
+  /* Progress mini */
+  .prog-mini { width:80px; height:4px; background:var(--surface2); border-radius:2px; overflow:hidden; }
+  .prog-mini-fill { height:100%; border-radius:2px; }
 
-  .release-history { margin-top: 12px; }
-  .release-history h4 { font-size: 12px; color: var(--text3); margin-bottom: 8px; font-weight: 600; }
-  .history-list { max-height: 120px; overflow-y: auto; }
-  .history-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    font-size: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .history-item:last-child { border: none; }
-  .history-item .ver { font-weight: 600; color: var(--primary2); }
-  .history-item .date { color: var(--text3); }
-  .history-item .del-btn {
-    color: var(--text3);
-    cursor: pointer;
-    font-size: 14px;
-    padding: 0 4px;
-  }
-  .history-item .del-btn:hover { color: var(--danger); }
+  /* Modal */
+  .modal-overlay { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.active { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px; width:100%; max-width:400px; }
+  .modal h2 { font-size:18px; font-weight:700; margin-bottom:20px; }
+  .modal label { font-size:13px; color:var(--text2); display:block; margin-bottom:6px; font-weight:500; }
+  .modal input,.modal select { width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:14px; outline:none; margin-bottom:14px; }
+  .modal-actions { display:flex; gap:10px; margin-top:8px; }
+  .modal-actions button { flex:1; }
 
-  .card-actions { display: flex; gap: 8px; margin-top: 12px; }
-
-  /* ---- Modal ---- */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    width: 100%;
-    max-width: 400px;
-  }
-  .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
-  .modal label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 6px; font-weight: 500; }
-  .modal input, .modal select {
-    width: 100%;
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    font-size: 14px;
-    outline: none;
-    margin-bottom: 14px;
-  }
-  .modal input:focus, .modal select:focus { border-color: var(--primary); }
-  .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
-  .modal-actions button { flex: 1; }
-
-  /* Calendar hint */
-  .next-release {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--text2);
-    margin-top: 4px;
-  }
-  .next-release .cal-icon { font-size: 14px; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  @media (max-width: 600px) {
-    .app-grid { grid-template-columns: 1fr; }
-    .stats-bar { grid-template-columns: repeat(2, 1fr); }
-    .header { flex-direction: column; gap: 12px; align-items: flex-start; }
-  }
+  ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  @media(max-width:700px) { .stats-bar{grid-template-columns:repeat(2,1fr);} .cal-cell{min-height:50px;} .app-row .info{flex-direction:column;align-items:flex-start;gap:4px;} .app-row{flex-wrap:wrap;} }
 </style>
 </head>
 <body>
 
-<!-- ---- Login ---- -->
 <div id="login-screen">
   <div class="login-card">
     <h1>OlaaSoft</h1>
@@ -278,12 +104,9 @@
   </div>
 </div>
 
-<!-- ---- Dashboard ---- -->
 <div id="dashboard">
   <div class="header">
-    <div>
-      <h1>Release Dashboard</h1>
-    </div>
+    <h1>Release Dashboard</h1>
     <div class="header-actions">
       <button class="btn" id="sync-btn" onclick="syncFromAppStore()">🔄 Sync</button>
       <button class="btn" onclick="exportData()">Export</button>
@@ -293,10 +116,22 @@
   </div>
 
   <div class="stats-bar" id="stats-bar"></div>
-  <div class="app-grid" id="app-grid"></div>
+  <div class="cal-wrap">
+    <div class="cal-header">
+      <button class="btn btn-sm" onclick="calNav(-1)">← Prev</button>
+      <h2 id="cal-title"></h2>
+      <button class="btn btn-sm" onclick="calNav(1)">Next →</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+  <div class="section-title">Published Apps</div>
+  <div class="app-list" id="app-list-published"></div>
+
+  <div class="section-title" style="color:var(--text3)">Not Yet Published</div>
+  <div class="app-list" id="app-list-unpublished"></div>
 </div>
 
-<!-- ---- Add Release Modal ---- -->
 <div class="modal-overlay" id="modal-add">
   <div class="modal">
     <h2>Add Release</h2>
@@ -314,280 +149,222 @@
 </div>
 
 <script>
-// ---- Config ----
-const PASSWORD_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // sha256 of 'password'
-const CYCLE_DAYS = 14;
-const APPS = [
-  { id: 'turboscanner', name: 'TurboScanner', bundle: 'com.ols.turboscanner' },
-  { id: 'patches', name: 'Patches', bundle: 'com.ols.patches' },
-  { id: 'simsim', name: 'SIM-SIM', bundle: 'com.ols.simsim' },
-  { id: 'pixl', name: 'Pixl', bundle: 'com.ols.pixl' },
-  { id: 'swipey', name: 'Swipey', bundle: 'com.ols.swipey' },
-  { id: 'snapid', name: 'SnapID', bundle: 'com.ols.snapid' },
-  { id: 'nobg', name: 'NoBG', bundle: 'com.ols.nobg' },
-  { id: 'voxify', name: 'Voxify', bundle: 'com.ols.voxify' },
-  { id: 'facetoon', name: 'Facetoon', bundle: 'com.ols.facetoon' },
-  { id: 'colorudo', name: 'Colorudo', bundle: 'com.ols.colorudo' },
-  { id: 'dozzy', name: 'Dozzy', bundle: 'com.ols.dozzy' },
-  { id: 'uplift', name: 'Uplift', bundle: 'com.ols.uplift' },
-  { id: 'namora', name: 'Namora', bundle: 'com.ols.namora' },
+const PASSWORD_HASH='5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8';
+const CYCLE_DAYS=14;
+const APPS=[
+  {id:'turboscanner',name:'TurboScanner',bundle:'com.ols.turboscanner'},
+  {id:'patches',name:'Patches',bundle:'com.ols.patches'},
+  {id:'simsim',name:'SIM-SIM',bundle:'com.ols.simsim'},
+  {id:'pixl',name:'Pixl',bundle:'com.ols.pixl'},
+  {id:'swipey',name:'Swipey',bundle:'com.ols.swipey'},
+  {id:'snapid',name:'SnapID',bundle:'com.ols.snapid'},
+  {id:'nobg',name:'NoBG',bundle:'com.ols.nobg'},
+  {id:'voxify',name:'Voxify',bundle:'com.ols.voxify'},
+  {id:'facetoon',name:'Facetoon',bundle:'com.ols.facetoon'},
+  {id:'colorudo',name:'Colorudo',bundle:'com.ols.colorudo'},
+  {id:'dozzy',name:'Dozzy',bundle:'com.ols.dozzy'},
+  {id:'uplift',name:'Uplift',bundle:'com.ols.uplift'},
+  {id:'namora',name:'Namora',bundle:'com.ols.namora'},
 ];
 
-// ---- Auth ----
-async function sha256(msg) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
-}
+// Colors per app for calendar events
+const APP_COLORS = ['#6366f1','#3b82f6','#22c55e','#f59e0b','#ef4444','#ec4899','#8b5cf6','#14b8a6','#f97316','#06b6d4','#84cc16','#e11d48','#a855f7'];
 
-async function doLogin() {
-  const pwd = document.getElementById('pwd').value;
-  const hash = await sha256(pwd);
-  if (hash === PASSWORD_HASH) {
-    localStorage.setItem('ols_dash_auth', '1');
-    showDashboard();
-  } else {
-    const err = document.getElementById('login-error');
-    err.style.display = 'block';
-    setTimeout(() => err.style.display = 'none', 2000);
-  }
-}
+let calYear, calMonth;
+{ const n=new Date(); calYear=n.getFullYear(); calMonth=n.getMonth(); }
 
-function showDashboard() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  render();
-}
+async function sha256(m){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function doLogin(){const h=await sha256(document.getElementById('pwd').value);if(h===PASSWORD_HASH){localStorage.setItem('ols_dash_auth','1');showDashboard();}else{const e=document.getElementById('login-error');e.style.display='block';setTimeout(()=>e.style.display='none',2000);}}
+function showDashboard(){document.getElementById('login-screen').style.display='none';document.getElementById('dashboard').style.display='block';render();}
+function getData(){return JSON.parse(localStorage.getItem('ols_releases')||'{}');}
+function setData(d){localStorage.setItem('ols_releases',JSON.stringify(d));}
 
-// ---- Data ----
-function getData() {
-  return JSON.parse(localStorage.getItem('ols_releases') || '{}');
-}
-function setData(d) {
-  localStorage.setItem('ols_releases', JSON.stringify(d));
-}
-
-// ---- Render ----
-function render() {
-  const data = getData();
-  const now = new Date();
-  let okCount = 0, warnCount = 0, overdueCount = 0;
-
-  // Stats
-  APPS.forEach(app => {
-    const releases = data[app.id] || [];
-    const status = getStatus(releases, now);
-    if (status === 'ok') okCount++;
-    else if (status === 'warn') warnCount++;
-    else overdueCount++;
-  });
-
-  document.getElementById('stats-bar').innerHTML = `
-    <div class="stat-card">
-      <div class="label">Total Apps</div>
-      <div class="value">${APPS.length}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Up to Date</div>
-      <div class="value green">${okCount}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Due Soon</div>
-      <div class="value yellow">${warnCount}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Overdue</div>
-      <div class="value red">${overdueCount}</div>
-    </div>
-  `;
-
-  // App cards
-  document.getElementById('app-grid').innerHTML = APPS.map(app => {
-    const releases = (data[app.id] || []).sort((a, b) => new Date(b.date) - new Date(a.date));
-    const latest = releases[0];
-    const status = getStatus(releases, now);
-    const statusLabel = status === 'ok' ? 'OK' : status === 'warn' ? 'DUE SOON' : 'OVERDUE';
-    const statusClass = status === 'ok' ? 'status-ok' : status === 'warn' ? 'status-warn' : 'status-overdue';
-
-    const daysSince = latest ? Math.floor((now - new Date(latest.date)) / 86400000) : -1;
-    const daysLeft = latest ? Math.max(0, CYCLE_DAYS - daysSince) : 0;
-    const progress = latest ? Math.min(100, (daysSince / CYCLE_DAYS) * 100) : 100;
-    const progressColor = status === 'ok' ? 'var(--success)' : status === 'warn' ? 'var(--warning)' : 'var(--danger)';
-
-    const nextDate = latest ? new Date(new Date(latest.date).getTime() + CYCLE_DAYS * 86400000) : null;
-    const nextStr = nextDate ? nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No releases';
-
-    const historyHtml = releases.slice(0, 5).map(r => `
-      <div class="history-item">
-        <span class="ver">${r.version}</span>
-        <span class="date">${new Date(r.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-        <span class="del-btn" onclick="deleteRelease('${app.id}','${r.date}','${r.version}')" title="Delete">×</span>
-      </div>
-    `).join('');
-
-    return `
-      <div class="app-card">
-        <div class="app-card-header">
-          <div>
-            <div class="app-name">${app.name}</div>
-            <div class="app-bundle">${app.bundle}</div>
-          </div>
-          <span class="status-badge ${statusClass}">${statusLabel}</span>
-        </div>
-        <div class="release-info">
-          <div class="release-row">
-            <span class="label">Latest Version</span>
-            <span class="value">${latest ? latest.version : '—'}</span>
-          </div>
-          <div class="release-row">
-            <span class="label">Released</span>
-            <span class="value">${latest ? daysSince + 'd ago' : '—'}</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;background:${progressColor}"></div></div>
-          <div class="next-release">
-            <span class="cal-icon">📅</span>
-            Next release by: <strong>${nextStr}</strong> ${daysLeft > 0 ? `(${daysLeft}d left)` : latest ? '(overdue!)' : ''}
-          </div>
-        </div>
-        <div class="release-history">
-          <h4>Release History</h4>
-          <div class="history-list">${historyHtml || '<div style="font-size:12px;color:var(--text3)">No releases yet</div>'}</div>
-        </div>
-        <div class="card-actions">
-          <button class="btn btn-sm btn-primary" onclick="openAddReleaseFor('${app.id}')">+ Release</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function getStatus(releases, now) {
-  if (!releases.length) return 'overdue';
-  const latest = releases.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-  const days = Math.floor((now - new Date(latest.date)) / 86400000);
-  if (days <= 10) return 'ok';
-  if (days <= CYCLE_DAYS) return 'warn';
+function getStatus(releases){
+  if(!releases.length) return 'none';
+  const latest=releases.sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+  const days=Math.floor((new Date()-new Date(latest.date))/86400000);
+  if(days<=10) return 'ok';
+  if(days<=CYCLE_DAYS) return 'warn';
   return 'overdue';
 }
 
+function render(){
+  const data=getData();
+  const now=new Date();
+  let ok=0,warn=0,over=0,none=0;
+
+  const published=[], unpublished=[];
+  APPS.forEach(app=>{
+    const rels=(data[app.id]||[]).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const st=getStatus(rels);
+    if(st==='none'){none++;unpublished.push({...app,releases:rels,status:st});}
+    else{if(st==='ok')ok++;else if(st==='warn')warn++;else over++;published.push({...app,releases:rels,status:st});}
+  });
+
+  document.getElementById('stats-bar').innerHTML=`
+    <div class="stat-card"><div class="label">Published</div><div class="val">${published.length}</div></div>
+    <div class="stat-card"><div class="label">Up to Date</div><div class="val green">${ok}</div></div>
+    <div class="stat-card"><div class="label">Due Soon</div><div class="val yellow">${warn}</div></div>
+    <div class="stat-card"><div class="label">Overdue</div><div class="val red">${over}</div></div>
+  `;
+
+  // Published app list
+  document.getElementById('app-list-published').innerHTML=published.map(app=>{
+    const l=app.releases[0];
+    const days=Math.floor((now-new Date(l.date))/86400000);
+    const left=Math.max(0,CYCLE_DAYS-days);
+    const pct=Math.min(100,(days/CYCLE_DAYS)*100);
+    const pc=app.status==='ok'?'var(--success)':app.status==='warn'?'var(--warning)':'var(--danger)';
+    const bc=app.status==='ok'?'badge-ok':app.status==='warn'?'badge-warn':'badge-overdue';
+    const bl=app.status==='ok'?'OK':app.status==='warn'?'DUE SOON':'OVERDUE';
+    const next=new Date(new Date(l.date).getTime()+CYCLE_DAYS*86400000);
+    const ns=next.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return `<div class="app-row">
+      <div><div class="name">${app.name}</div><div class="bundle">${app.bundle}</div></div>
+      <div class="info">
+        <span>v<strong>${l.version}</strong></span>
+        <span><strong>${days}d</strong> ago</span>
+        <div class="prog-mini"><div class="prog-mini-fill" style="width:${pct}%;background:${pc}"></div></div>
+        <span>📅 <strong>${ns}</strong> ${left>0?`(${left}d)`:'(overdue!)'}</span>
+        <span class="badge ${bc}">${bl}</span>
+      </div>
+      <div class="actions">
+        <button class="btn btn-sm btn-primary" onclick="openAddReleaseFor('${app.id}')">+ Release</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Unpublished
+  document.getElementById('app-list-unpublished').innerHTML=unpublished.map(app=>`
+    <div class="app-row app-row-dim">
+      <div><div class="name">${app.name}</div><div class="bundle">${app.bundle}</div></div>
+      <div class="info"><span class="badge badge-none">NOT PUBLISHED</span></div>
+      <div class="actions"><button class="btn btn-sm" onclick="openAddReleaseFor('${app.id}')">+ Release</button></div>
+    </div>
+  `).join('');
+
+  renderCalendar(data);
+}
+
+// ---- Calendar ----
+function calNav(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar(getData());}
+
+function renderCalendar(data){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-title').textContent=`${months[calMonth]} ${calYear}`;
+
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  const todayStr=today.toISOString().split('T')[0];
+
+  // Build events map: date → [{app, type, version}]
+  const events={};
+  APPS.forEach((app,idx)=>{
+    const rels=(data[app.id]||[]).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    if(!rels.length) return; // skip unpublished
+
+    rels.forEach(r=>{
+      const d=r.date;
+      if(!events[d]) events[d]=[];
+      events[d].push({name:app.name,type:'release',version:r.version,color:APP_COLORS[idx%APP_COLORS.length]});
+    });
+
+    // Next deadline from latest release
+    const latest=rels[0];
+    if(latest){
+      const deadline=new Date(new Date(latest.date).getTime()+CYCLE_DAYS*86400000);
+      const ds=deadline.toISOString().split('T')[0];
+      const isOverdue=deadline<today;
+      if(!events[ds]) events[ds]=[];
+      events[ds].push({name:app.name,type:isOverdue?'deadline':'deadline-warn',color:APP_COLORS[idx%APP_COLORS.length]});
+    }
+  });
+
+  let html='';
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>{html+=`<div class="cal-day-name">${d}</div>`;});
+
+  // Empty cells before first day
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-cell empty"></div>`;
+
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=ds===todayStr;
+    const dayEvents=events[ds]||[];
+    const evHtml=dayEvents.slice(0,3).map(e=>{
+      const cls=e.type==='release'?'release':e.type==='deadline'?'deadline':'deadline-warn';
+      const label=e.type==='release'?`✅ ${e.name} v${e.version}`:`⏰ ${e.name}`;
+      return `<div class="cal-event ${cls}" title="${label}" style="border-left:2px solid ${e.color}">${label}</div>`;
+    }).join('');
+    const more=dayEvents.length>3?`<div style="font-size:9px;color:var(--text3)">+${dayEvents.length-3} more</div>`:'';
+    html+=`<div class="cal-cell${isToday?' today':''}"><div class="day-num">${d}</div>${evHtml}${more}</div>`;
+  }
+
+  document.getElementById('cal-grid').innerHTML=html;
+}
+
 // ---- Add Release ----
-function openAddRelease() {
-  const sel = document.getElementById('add-app');
-  sel.innerHTML = APPS.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-  document.getElementById('add-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('add-version').value = '';
+function openAddRelease(){
+  const sel=document.getElementById('add-app');
+  sel.innerHTML=APPS.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
+  document.getElementById('add-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('add-version').value='';
   document.getElementById('modal-add').classList.add('active');
 }
-
-function openAddReleaseFor(appId) {
+function openAddReleaseFor(appId){
   openAddRelease();
-  document.getElementById('add-app').value = appId;
-  // Pre-fill next version
-  const data = getData();
-  const releases = (data[appId] || []).sort((a, b) => new Date(b.date) - new Date(a.date));
-  if (releases.length) {
-    const parts = releases[0].version.split('.');
-    if (parts.length === 3) {
-      parts[2] = parseInt(parts[2] || 0) + 1;
-      document.getElementById('add-version').value = parts.join('.');
-    }
-  }
+  document.getElementById('add-app').value=appId;
+  const data=getData();
+  const rels=(data[appId]||[]).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(rels.length){const p=rels[0].version.split('.');if(p.length===3){p[2]=parseInt(p[2]||0)+1;document.getElementById('add-version').value=p.join('.');}}
 }
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
-}
-
-function saveRelease() {
-  const appId = document.getElementById('add-app').value;
-  const version = document.getElementById('add-version').value.trim();
-  const date = document.getElementById('add-date').value;
-  if (!version || !date) return;
-
-  const data = getData();
-  if (!data[appId]) data[appId] = [];
-  data[appId].push({ version, date });
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function saveRelease(){
+  const appId=document.getElementById('add-app').value;
+  const version=document.getElementById('add-version').value.trim();
+  const date=document.getElementById('add-date').value;
+  if(!version||!date) return;
+  const data=getData();
+  if(!data[appId]) data[appId]=[];
+  data[appId].push({version,date});
   setData(data);
   closeModal('modal-add');
   render();
 }
-
-function deleteRelease(appId, date, version) {
-  if (!confirm(`Delete ${version} (${date})?`)) return;
-  const data = getData();
-  data[appId] = (data[appId] || []).filter(r => !(r.date === date && r.version === version));
+function deleteRelease(appId,date,version){
+  if(!confirm(`Delete ${version} (${date})?`)) return;
+  const data=getData();
+  data[appId]=(data[appId]||[]).filter(r=>!(r.date===date&&r.version===version));
   setData(data);
   render();
 }
 
 // ---- Export / Import ----
-function exportData() {
-  const blob = new Blob([JSON.stringify(getData(), null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'ols-releases.json';
-  a.click();
-}
+function exportData(){const b=new Blob([JSON.stringify(getData(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ols-releases.json';a.click();}
+function importData(){const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=async e=>{try{setData(JSON.parse(await e.target.files[0].text()));render();}catch{alert('Invalid JSON');}};i.click();}
 
-function importData() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json';
-  input.onchange = async (e) => {
-    const text = await e.target.files[0].text();
-    try {
-      const d = JSON.parse(text);
-      setData(d);
-      render();
-    } catch { alert('Invalid JSON'); }
-  };
-  input.click();
-}
-
-// ---- Sync from App Store Connect ----
-const SYNC_URL = 'https://ols-release-sync.choicy-appstore.workers.dev';
-
-async function syncFromAppStore() {
-  const btn = document.getElementById('sync-btn');
-  btn.textContent = '⏳ Syncing...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch(SYNC_URL);
-    const live = await res.json();
-    if (live.error) throw new Error(live.error);
-
-    const data = getData();
-    let added = 0;
-
-    for (const [appId, info] of Object.entries(live)) {
-      if (!data[appId]) data[appId] = [];
-      // Check if this version+date already exists
-      const date = info.releaseDate.split('T')[0];
-      const exists = data[appId].some(r => r.version === info.version && r.date === date);
-      if (!exists) {
-        data[appId].push({ version: info.version, date });
-        added++;
-      }
+// ---- Sync ----
+const SYNC_URL='https://ols-release-sync.choicy-appstore.workers.dev';
+async function syncFromAppStore(){
+  const btn=document.getElementById('sync-btn');
+  btn.textContent='⏳ Syncing...';btn.disabled=true;
+  try{
+    const res=await fetch(SYNC_URL);const live=await res.json();
+    if(live.error) throw new Error(live.error);
+    const data=getData();let added=0;
+    for(const[appId,info] of Object.entries(live)){
+      if(!data[appId]) data[appId]=[];
+      const date=info.releaseDate.split('T')[0];
+      const exists=data[appId].some(r=>r.version===info.version&&r.date===date);
+      if(!exists){data[appId].push({version:info.version,date});added++;}
     }
-
-    setData(data);
-    render();
-    btn.textContent = added > 0 ? `✅ ${added} synced` : '✅ Up to date';
-  } catch (err) {
-    btn.textContent = '❌ Failed';
-    console.error('Sync error:', err);
-  }
-
-  setTimeout(() => {
-    btn.textContent = '🔄 Sync';
-    btn.disabled = false;
-  }, 2000);
+    setData(data);render();
+    btn.textContent=added>0?`✅ ${added} synced`:'✅ Up to date';
+  }catch(err){btn.textContent='❌ Failed';console.error(err);}
+  setTimeout(()=>{btn.textContent='🔄 Sync';btn.disabled=false;},2000);
 }
 
-// ---- Init ----
-if (localStorage.getItem('ols_dash_auth') === '1') {
-  showDashboard();
-}
+if(localStorage.getItem('ols_dash_auth')==='1') showDashboard();
 </script>
 </body>
 </html>
