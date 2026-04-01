@@ -351,15 +351,25 @@ async function syncFromAppStore(){
   try{
     const res=await fetch(SYNC_URL);const live=await res.json();
     if(live.error) throw new Error(live.error);
-    const data=getData();let added=0;
+    const data=getData();let updated=0;
     for(const[appId,info] of Object.entries(live)){
-      if(!data[appId]) data[appId]=[];
       const date=info.releaseDate.split('T')[0];
-      const exists=data[appId].some(r=>r.version===info.version&&r.date===date);
-      if(!exists){data[appId].push({version:info.version,date});added++;}
+      // Replace all data for this app with the live version
+      // Keep manual entries that don't match the live version
+      const existing=data[appId]||[];
+      const hasThisVersion=existing.some(r=>r.version===info.version);
+      if(hasThisVersion){
+        // Update date if different
+        data[appId]=existing.map(r=>r.version===info.version?{...r,date}:r);
+        updated++;
+      } else {
+        // Add new version from App Store
+        data[appId]=[...existing,{version:info.version,date}];
+        updated++;
+      }
     }
     setData(data);render();
-    btn.textContent=added>0?`✅ ${added} synced`:'✅ Up to date';
+    btn.textContent=`✅ ${updated} synced`;
   }catch(err){btn.textContent='❌ Failed';console.error(err);}
   setTimeout(()=>{btn.textContent='🔄 Sync';btn.disabled=false;},2000);
 }
