@@ -285,6 +285,7 @@
       <h1>Release Dashboard</h1>
     </div>
     <div class="header-actions">
+      <button class="btn" id="sync-btn" onclick="syncFromAppStore()">🔄 Sync</button>
       <button class="btn" onclick="exportData()">Export</button>
       <button class="btn" onclick="importData()">Import</button>
       <button class="btn btn-primary" onclick="openAddRelease()">+ Add Release</button>
@@ -540,6 +541,47 @@ function importData() {
     } catch { alert('Invalid JSON'); }
   };
   input.click();
+}
+
+// ---- Sync from App Store Connect ----
+const SYNC_URL = 'https://ols-release-sync.choicy-appstore.workers.dev';
+
+async function syncFromAppStore() {
+  const btn = document.getElementById('sync-btn');
+  btn.textContent = '⏳ Syncing...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(SYNC_URL);
+    const live = await res.json();
+    if (live.error) throw new Error(live.error);
+
+    const data = getData();
+    let added = 0;
+
+    for (const [appId, info] of Object.entries(live)) {
+      if (!data[appId]) data[appId] = [];
+      // Check if this version+date already exists
+      const date = info.releaseDate.split('T')[0];
+      const exists = data[appId].some(r => r.version === info.version && r.date === date);
+      if (!exists) {
+        data[appId].push({ version: info.version, date });
+        added++;
+      }
+    }
+
+    setData(data);
+    render();
+    btn.textContent = added > 0 ? `✅ ${added} synced` : '✅ Up to date';
+  } catch (err) {
+    btn.textContent = '❌ Failed';
+    console.error('Sync error:', err);
+  }
+
+  setTimeout(() => {
+    btn.textContent = '🔄 Sync';
+    btn.disabled = false;
+  }, 2000);
 }
 
 // ---- Init ----

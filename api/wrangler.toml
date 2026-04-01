@@ -1,0 +1,9 @@
+name = "ols-release-sync"
+main = "sync.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+# App Store Connect App IDs → internal names
+# Add more apps here as they get published
+ASC_APPS = '{"6760856920":"turboscanner","6761279876":"patches"}'
+# TurboScanner: 6760856920, Patches: 6761279876
