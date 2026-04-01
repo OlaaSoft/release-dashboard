@@ -70,7 +70,8 @@ async function createJWT(privateKeyPem) {
 }
 
 // Fetch app versions from App Store Connect
-async function fetchAppVersion(jwt, appId) {
+async function fetchAppVersion(jwt, appId, bundleId) {
+  // First try App Store Connect API for version info
   const url = `https://api.appstoreconnect.apple.com/v1/apps/${appId}/appStoreVersions?filter[appStoreState]=READY_FOR_SALE&limit=1`;
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${jwt}` },
@@ -79,10 +80,22 @@ async function fetchAppVersion(jwt, appId) {
   const json = await res.json();
   const version = json.data?.[0];
   if (!version) return null;
+
+  // Get actual release date from App Store lookup API (public, no auth needed)
+  let releaseDate = version.attributes.createdDate;
+  try {
+    const lookupRes = await fetch(`https://itunes.apple.com/lookup?id=${appId}&country=us`);
+    const lookupJson = await lookupRes.json();
+    const result = lookupJson.results?.[0];
+    if (result?.currentVersionReleaseDate) {
+      releaseDate = result.currentVersionReleaseDate;
+    }
+  } catch (_) { /* fallback to createdDate */ }
+
   return {
     version: version.attributes.versionString,
     state: version.attributes.appStoreState,
-    releaseDate: version.attributes.createdDate,
+    releaseDate,
   };
 }
 
