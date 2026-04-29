@@ -1,8 +1,0 @@
-name = "ols-release-sync"
-main = "sync.js"
-compatibility_date = "2024-01-01"
-
-[vars]
-# App Store Connect App IDs → internal names
-# Add more apps here as they get published
-ASC_APPS = '{"6760856920":"turboscanner","6761279876":"patches","6761344928":"simsim","6761345087":"pixl","6761345054":"swipey","6761345089":"snapid","6761344837":"nobg","6761345100":"voxify","6761345120":"facetoon","6761345009":"colorudo","6761345205":"dozzy","6761345173":"uplift","6761345236":"namora"}'
